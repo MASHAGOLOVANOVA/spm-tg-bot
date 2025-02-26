@@ -3,6 +3,8 @@ project_handler - Модуль для работы с проектами пол�
 """
 from datetime import datetime, timedelta
 import telebot
+from requests import RequestException
+
 from bot.bot import bot, CLIENT_URL
 from project.project_service import get_projects, \
     get_project_commits, get_project_details, get_project_statistics, \
@@ -39,7 +41,7 @@ def handle_projects(message):
                 bot.send_message(message.chat.id, project_card, reply_markup=markup)
         else:
             bot.send_message(message.chat.id, "У вас нет проектов.")
-    except Exception as e:
+    except RequestException as e:
         bot.send_message(message.chat.id, f"Ошибка: {str(e)}")
 
 
