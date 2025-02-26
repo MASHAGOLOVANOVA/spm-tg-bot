@@ -1,14 +1,14 @@
 """
 project_handler - Модуль для работы с проектами пользователя
 """
+import telebot
+from datetime import datetime, timedelta
 from bot.bot import bot, CLIENT_URL
 from project.project_service import *
 from menu.menu_handler import show_main_menu
 from student.student_service import get_students
-import telebot
 from student.student_handler import handle_student_name
 from integration.integration_handler import get_repohub
-from datetime import datetime, timedelta
 
 
 @bot.message_handler(func=lambda message: message.text == "Мои проекты")

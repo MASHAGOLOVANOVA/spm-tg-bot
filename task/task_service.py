@@ -3,8 +3,8 @@ task_service - Модуль для работы с задачами
 
 Этот модуль работает с API
 """
-from bot.bot import HOST_URL, sessionManager
 import requests
+from bot.bot import HOST_URL, sessionManager
 
 
 def add_task_to_project(project_id, task_data):

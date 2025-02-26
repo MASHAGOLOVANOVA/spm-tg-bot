@@ -3,8 +3,8 @@ project_service - Модуль для работы с проектами
 
 Этот модуль работает с API
 """
-from bot.bot import HOST_URL, sessionManager
 import requests
+from bot.bot import HOST_URL, sessionManager
 
 
 def add_project(project_theme, student_id, project_year, repo_owner, repository_name):

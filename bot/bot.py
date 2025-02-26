@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Этот модуль реализует функциональность бота Telegram."""
+import os
 import telebot
 from dotenv import load_dotenv
-import os
 from session_manager import SessionManager
 
 load_dotenv()
