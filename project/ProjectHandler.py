@@ -58,6 +58,7 @@ def new_project(message):
         return
     # Создаем клавиатуру для выбора студента
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(telebot.types.KeyboardButton("Добавить нового студента..."))
     for student in students:
         keyboard.add(
             telebot.types.KeyboardButton(
@@ -74,6 +75,10 @@ def new_project(message):
 def handle_student_selection(message):
     """функция для выбора студента"""
     student_name = message.text
+    if student_name == "Добавить нового студента...":
+        bot.send_message(message.chat.id, "Введите имя нового студента:")
+        bot.register_next_step_handler(message, handle_student_name)
+        return
     # Здесь вы можете добавить проверку на наличие выбранного студента в списке
     # Например, если у вас есть список студентов в виде словаря
     students = get_students()

@@ -2,7 +2,6 @@ from bot.bot import bot
 from menu.MenuHandler import show_main_menu
 from student.StudentService import add_student
 import telebot
-from project.ProjectHandler import add_project
 from ed_programme.EdProgService import get_educational_programmes
 
 
@@ -90,7 +89,7 @@ def handle_student_programme(message, student_name, student_surname, student_mid
         "name": student_name,
         "surname": student_surname,
         "middlename": student_middlename,
-        "course": student_course,
+        "cource": student_course,
         "education_programme_id": selected_programme["id"],
     }
 
@@ -101,13 +100,12 @@ def handle_student_programme(message, student_name, student_surname, student_mid
             message.chat.id,
             f'Студент "{student_name} {student_surname}" успешно добавлен!',
         )
-        add_project(message)  # После добавления студента можно снова вызвать функцию добавления проекта
     else:
         bot.send_message(
             message.chat.id,
             f"Ошибка при добавлении студента: {response.status_code}. Попробуйте снова.",
         )
-        show_main_menu(message.chat.id)
+    show_main_menu(message.chat.id)
 
 
 def get_selected_programme(selected_programme_name):

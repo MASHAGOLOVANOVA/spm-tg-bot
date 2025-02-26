@@ -4,6 +4,7 @@ from bot.bot import bot
 from meeting.MeetingService import *
 from datetime import datetime, timedelta
 import telebot
+from menu.MenuHandler import show_main_menu
 
 days_translation = {
     "Monday": "Понедельник",
@@ -161,3 +162,5 @@ def handle_meeting_format(message, project_id, student_id, meeting_options, time
         )
     except Exception as e:
         bot.send_message(message.chat.id, str(e))
+    finally:
+        show_main_menu(message.chat.id)

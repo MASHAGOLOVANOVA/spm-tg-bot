@@ -58,6 +58,9 @@ def handle_task_deadline(message, project_id, task_name, task_description):
             message.chat.id,
             "Неверный формат даты. Пожалуйста, используйте формат dd.mm.YYYY HH:MM.",
         )
+        bot.register_next_step_handler(
+            message, handle_task_deadline, project_id, task_name, task_description
+        )
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("tasks_project_"))
