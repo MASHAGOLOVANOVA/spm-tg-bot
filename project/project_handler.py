@@ -4,7 +4,8 @@ project_handler - Модуль для работы с проектами пол�
 import telebot
 from datetime import datetime, timedelta
 from bot.bot import bot, CLIENT_URL
-from project.project_service import *
+from project.project_service import get_projects, get_project_commits, get_project_details, get_project_statistics, \
+    add_project
 from menu.menu_handler import show_main_menu
 from student.student_service import get_students
 from student.student_handler import handle_student_name
@@ -87,7 +88,7 @@ def handle_student_selection(message):
     students = get_students()
 
     selected_student = next(
-        (s for s in students if (s["surname"]+" "+s["name"]+" "+s["middlename"]) == student_name), None
+        (s for s in students if (s["surname"] + " " + s["name"] + " " + s["middlename"]) == student_name), None
     )
 
     if selected_student is None:

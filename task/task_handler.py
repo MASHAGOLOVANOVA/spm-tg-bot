@@ -3,7 +3,7 @@ project_handler - Модуль для работы с задачами
 """
 from bot.bot import bot
 from datetime import datetime
-from task.task_service import *
+from task.task_service import get_project_tasks, add_task_to_project
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("add_task_project_"))

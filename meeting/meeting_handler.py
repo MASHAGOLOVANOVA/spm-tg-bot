@@ -2,11 +2,11 @@
 meeting-handler - Модуль для обработки встреч пользователя
 """
 import telebot
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 from telegram.constants import ParseMode
 
 from bot.bot import bot
-from meeting.meeting_service import *
+from meeting.meeting_service import get_meetings, add_meeting
 from menu.menu_handler import show_main_menu
 
 days_translation = {

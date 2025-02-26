@@ -6,7 +6,7 @@ auth_handler - Модуль для обработки аутентификаци
 """
 from requests.exceptions import RequestException
 from bot.bot import bot, CLIENT_URL, update_session_token
-from auth.auth_service import *
+from auth.auth_service import send_verification_request, get_account
 from menu.menu_handler import show_main_menu
 from integration.integration_handler import get_cloud_drive
 

@@ -1,7 +1,7 @@
 """
 integration_handler - Модуль для работы с интеграциями пользователя
 """
-from integration.integration_service import *
+from integration.integration_service import get_integrations
 
 
 def get_cloud_drive():
