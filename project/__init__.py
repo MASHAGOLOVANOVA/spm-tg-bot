@@ -1,2 +1,2 @@
-from project_handler import *
-from project_service import *
+from .project_handler import *
+from .project_service import *

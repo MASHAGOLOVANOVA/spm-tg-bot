@@ -1,2 +1,2 @@
-from integration_service import *
-from integration_handler import *
+from .integration_service import *
+from .integration_handler import *

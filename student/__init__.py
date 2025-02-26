@@ -1,2 +1,2 @@
-from student_handler import *
-from student_service import *
+from .student_handler import *
+from .student_service import *
