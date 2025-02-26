@@ -1,3 +1,6 @@
+"""
+command-handler - Модуль для обработки команд бота
+"""
 from bot.bot import bot
 import telebot
 

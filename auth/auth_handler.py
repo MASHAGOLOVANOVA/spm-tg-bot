@@ -1,3 +1,9 @@
+"""
+auth_handler - Модуль для обработки аутентификации пользователей.
+
+Этот модуль содержит функции и классы, необходимые для управления
+аутентификацией пользователей в приложении.
+"""
 from bot.bot import bot, CLIENT_URL, update_session_token
 from auth.auth_service import *
 from requests.exceptions import RequestException

@@ -1,3 +1,8 @@
+"""
+auth_service - Модуль для обработки аутентификации пользователей.
+
+Этот модуль работает с API
+"""
 import requests
 from bot.bot import HOST_URL, sessionManager
 

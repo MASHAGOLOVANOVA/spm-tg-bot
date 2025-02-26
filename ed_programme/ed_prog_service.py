@@ -1,3 +1,8 @@
+"""
+ed_prog_service - Модуль для работы с учебными направлениями
+
+Этот модуль работает с API
+"""
 import requests
 from bot.bot import HOST_URL, sessionManager
 

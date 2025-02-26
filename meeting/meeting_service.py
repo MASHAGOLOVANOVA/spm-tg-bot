@@ -1,3 +1,8 @@
+"""
+meeting_service - Модуль для работы сс встречами
+
+Этот модуль работает с API
+"""
 from datetime import datetime
 from bot.bot import HOST_URL, sessionManager
 import requests

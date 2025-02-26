@@ -1,3 +1,6 @@
+"""
+menu-handler - Модуль для обработки главного меню
+"""
 from bot.bot import bot, CLIENT_URL
 import telebot.types
 from integration.integration_handler import get_google_planner

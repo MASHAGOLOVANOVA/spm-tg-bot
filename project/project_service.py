@@ -1,3 +1,8 @@
+"""
+project_service - Модуль для работы с проектами
+
+Этот модуль работает с API
+"""
 from bot.bot import HOST_URL, sessionManager
 import requests
 

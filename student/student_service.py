@@ -1,3 +1,8 @@
+"""
+student_service - Модуль для работы со студентами
+
+Этот модуль работает с API
+"""
 import requests
 from bot.bot import HOST_URL, sessionManager
 

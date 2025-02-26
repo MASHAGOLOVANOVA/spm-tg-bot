@@ -1,3 +1,8 @@
+"""
+integration_service - Модуль для работы с интеграциями пользователя
+
+Этот модуль работает с API
+"""
 import requests
 from bot.bot import HOST_URL, sessionManager
 

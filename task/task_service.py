@@ -1,3 +1,8 @@
+"""
+task_service - Модуль для работы с задачами
+
+Этот модуль работает с API
+"""
 from bot.bot import HOST_URL, sessionManager
 import requests
 

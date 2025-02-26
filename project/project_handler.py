@@ -1,3 +1,6 @@
+"""
+project_handler - Модуль для работы с проектами пользователя
+"""
 from bot.bot import bot, CLIENT_URL
 from project.project_service import *
 from menu.menu_handler import show_main_menu

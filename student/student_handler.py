@@ -1,3 +1,6 @@
+"""
+project_handler - Модуль для работы со студентами
+"""
 from bot.bot import bot
 from menu.menu_handler import show_main_menu
 from student.student_service import add_student

@@ -1,3 +1,6 @@
+"""
+project_handler - Модуль для работы с задачами
+"""
 from bot.bot import bot
 from datetime import datetime
 from task.task_service import *

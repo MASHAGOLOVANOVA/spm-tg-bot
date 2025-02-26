@@ -1,3 +1,6 @@
+"""
+meeting-handler - Модуль для обработки встреч пользователя
+"""
 from telegram.constants import ParseMode
 
 from bot.bot import bot

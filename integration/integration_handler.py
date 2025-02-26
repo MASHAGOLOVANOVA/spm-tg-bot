@@ -1,3 +1,6 @@
+"""
+integration_handler - Модуль для работы с интеграциями пользователя
+"""
 from integration.integration_service import *
 
 
