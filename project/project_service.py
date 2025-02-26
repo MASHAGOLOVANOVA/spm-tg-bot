@@ -24,8 +24,7 @@ def add_project(project_theme, student_id, project_year, repo_owner, repository_
 
     if response.status_code == 200:
         return True, f'Проект "{project_theme}" успешно добавлен!'
-    else:
-        return False, f"Ошибка при добавлении проекта: {response.status_code}"
+    return False, f"Ошибка при добавлении проекта: {response.status_code}"
 
 
 def get_projects():
@@ -37,8 +36,7 @@ def get_projects():
     )
     if response.status_code == 200:
         return response.json().get("projects", [])
-    else:
-        raise Exception(f"Ошибка при получении проектов: {response.status_code}")
+    raise Exception(f"Ошибка при получении проектов: {response.status_code}")
 
 
 def get_project_details(project_id):

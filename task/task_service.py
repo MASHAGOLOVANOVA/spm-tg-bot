@@ -21,5 +21,4 @@ def get_project_tasks(project_id):
 
     if response.status_code == 200:
         return response.json().get("tasks", [])
-    else:
-        raise Exception(f"Ошибка при получении задач: {response.status_code}")
+    raise Exception(f"Ошибка при получении задач: {response.status_code}")

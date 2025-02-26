@@ -1,10 +1,11 @@
 """
 project_handler - Модуль для работы с проектами пользователя
 """
-import telebot
 from datetime import datetime, timedelta
+import telebot
 from bot.bot import bot, CLIENT_URL
-from project.project_service import get_projects, get_project_commits, get_project_details, get_project_statistics, \
+from project.project_service import get_projects, \
+    get_project_commits, get_project_details, get_project_statistics, \
     add_project
 from menu.menu_handler import show_main_menu
 from student.student_service import get_students

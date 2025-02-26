@@ -1,8 +1,8 @@
 """
 meeting-handler - Модуль для обработки встреч пользователя
 """
-import telebot
 from datetime import timedelta, datetime
+import telebot
 from telegram.constants import ParseMode
 
 from bot.bot import bot
@@ -163,7 +163,5 @@ def handle_meeting_format(message, project_id, student_id, meeting_options, time
             message.chat.id,
             "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
         )
-    except Exception as e:
-        bot.send_message(message.chat.id, str(e))
     finally:
         show_main_menu(message.chat.id)

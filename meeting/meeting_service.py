@@ -36,5 +36,4 @@ def add_meeting(meeting_data):
 
     if response.status_code == 200:
         return True
-    else:
-        raise Exception(f"Ошибка при добавлении встречи: {response.status_code}, {response.text}")
+    raise Exception(f"Ошибка при добавлении встречи: {response.status_code}, {response.text}")

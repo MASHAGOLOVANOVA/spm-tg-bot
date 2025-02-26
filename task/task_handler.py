@@ -1,8 +1,8 @@
 """
 project_handler - Модуль для работы с задачами
 """
-from bot.bot import bot
 from datetime import datetime
+from bot.bot import bot
 from task.task_service import get_project_tasks, add_task_to_project
 
 
