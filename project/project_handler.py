@@ -148,7 +148,7 @@ def handle_repository_name(message, student, project_theme, project_year, repo_o
     """Обработчик для ввода имени репозитория."""
     repository_name = message.text
 
-    success, response_message = add_project(
+    response_message = add_project(
         project_theme, student["id"], project_year, repo_owner, repository_name
     )
 

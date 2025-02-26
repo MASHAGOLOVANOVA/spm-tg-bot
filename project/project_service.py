@@ -25,8 +25,8 @@ def add_project(project_theme, student_id, project_year, repo_owner, repository_
     )
 
     if response.status_code == 200:
-        return True, f'Проект "{project_theme}" успешно добавлен!'
-    return False, f"Ошибка при добавлении проекта: {response.status_code}"
+        return f'Проект "{project_theme}" успешно добавлен!'
+    return f"Ошибка при добавлении проекта: {response.status_code}"
 
 
 def get_projects():

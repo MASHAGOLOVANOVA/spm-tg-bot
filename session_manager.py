@@ -1,8 +1,4 @@
-"""
-session_manager - Класс для headers запросов по API
-"""
-
-
+""" session_manager - Класс для headers запросов по API """
 class SessionManager:
     """Класс для получении инфы о сессии"""
 

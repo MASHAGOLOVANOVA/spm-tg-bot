@@ -1,2 +1,2 @@
 """menu module init"""
-from menu_handler import *
+from .menu_handler import *

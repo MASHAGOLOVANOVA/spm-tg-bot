@@ -74,7 +74,8 @@ def handle_student_course(message, student_name, student_surname, student_middle
         handle_student_course(message, student_name, student_surname, student_middlename)
 
 
-def handle_student_programme(message, student_name, student_surname, student_middlename, student_course):
+def handle_student_programme(message, student_name,
+                             student_surname, student_middlename, student_course):
     """Функция для ввода уч программы студента."""
     selected_programme_name = message.text
     selected_programme = get_selected_programme(selected_programme_name)
