@@ -4,6 +4,8 @@ task_service - Модуль для работы с задачами
 Этот модуль работает с API
 """
 import requests
+from requests import RequestException
+
 from bot.bot import HOST_URL, sessionManager
 
 
@@ -21,4 +23,4 @@ def get_project_tasks(project_id):
 
     if response.status_code == 200:
         return response.json().get("tasks", [])
-    raise Exception(f"Ошибка при получении задач: {response.status_code}")
+    raise RequestException(f"Ошибка при получении задач: {response.status_code}")

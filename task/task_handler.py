@@ -2,6 +2,9 @@
 project_handler - Модуль для работы с задачами
 """
 from datetime import datetime
+
+from requests import RequestException
+
 from bot.bot import bot
 from task.task_service import get_project_tasks, add_task_to_project
 
@@ -77,7 +80,7 @@ def handle_project_tasks(call):
         tasks_message = format_tasks_message(tasks)  # Форматируем сообщение
         bot.send_message(call.message.chat.id, tasks_message, parse_mode="Markdown")
 
-    except Exception as e:
+    except RequestException as e:
         bot.send_message(call.message.chat.id, str(e))
 
 
@@ -91,11 +94,11 @@ def format_tasks_message(tasks):
         task_id = task.get("id", "Не указано")
         task_name = task.get("name", "Не указано")
         task_description = task.get("description", "Не указано")
-        task_deadline = task.get("deadline", "Не указано")
+        task_dead = task.get("deadline", "Не указано")
         task_status = task.get("status", "Не указано")
         cloud_folder_link = task.get("cloud_folder_link", "Не указано")
 
-        formatted_deadline = datetime.fromisoformat(task_deadline[:-1]).strftime("%Y-%m-%d %H:%M:%S")
+        formatted_deadline = datetime.fromisoformat(task_dead[:-1]).strftime("%Y-%m-%d %H:%M:%S")
 
         tasks_message += f"🔹 *ID:* {task_id}\n"
         tasks_message += f"📝 *Название:* {task_name}\n"

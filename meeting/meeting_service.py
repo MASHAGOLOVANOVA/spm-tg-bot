@@ -3,8 +3,10 @@ meeting_service - Модуль для работы сс встречами
 
 Этот модуль работает с API
 """
-import requests
 from datetime import datetime
+import requests
+from requests import RequestException
+
 from bot.bot import HOST_URL, sessionManager
 
 
@@ -36,4 +38,4 @@ def add_meeting(meeting_data):
 
     if response.status_code == 200:
         return True
-    raise Exception(f"Ошибка при добавлении встречи: {response.status_code}, {response.text}")
+    raise RequestException(f"Ошибка при добавлении встречи: {response.status_code}, {response.text}")

@@ -4,6 +4,8 @@ project_service - Модуль для работы с проектами
 Этот модуль работает с API
 """
 import requests
+from requests import RequestException
+
 from bot.bot import HOST_URL, sessionManager
 
 
@@ -36,7 +38,7 @@ def get_projects():
     )
     if response.status_code == 200:
         return response.json().get("projects", [])
-    raise Exception(f"Ошибка при получении проектов: {response.status_code}")
+    raise RequestException(f"Ошибка при получении проектов: {response.status_code}")
 
 
 def get_project_details(project_id):

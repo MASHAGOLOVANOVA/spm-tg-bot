@@ -89,7 +89,8 @@ def handle_student_selection(message):
     students = get_students()
 
     selected_student = next(
-        (s for s in students if (s["surname"] + " " + s["name"] + " " + s["middlename"]) == student_name), None
+        (s for s in students
+         if (s["surname"] + " " + s["name"] + " " + s["middlename"]) == student_name), None
     )
 
     if selected_student is None:
