@@ -1,6 +1,6 @@
 from bot.bot import bot
 from datetime import datetime
-from task.TaskService import *
+from task.task_service import *
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("add_task_project_"))

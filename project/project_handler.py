@@ -1,10 +1,10 @@
 from bot.bot import bot, CLIENT_URL
-from project.ProjectService import *
-from menu.MenuHandler import show_main_menu
-from student.StudentService import get_students
+from project.project_service import *
+from menu.menu_handler import show_main_menu
+from student.student_service import get_students
 import telebot
-from student.StudentHandler import handle_student_name
-from integration.IntegrationHandler import get_repohub
+from student.student_handler import handle_student_name
+from integration.integration_handler import get_repohub
 from datetime import datetime, timedelta
 
 

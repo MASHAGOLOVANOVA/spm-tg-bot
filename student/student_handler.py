@@ -1,8 +1,8 @@
 from bot.bot import bot
-from menu.MenuHandler import show_main_menu
-from student.StudentService import add_student
+from menu.menu_handler import show_main_menu
+from student.student_service import add_student
 import telebot
-from ed_programme.EdProgService import get_educational_programmes
+from ed_programme.ed_prog_service import get_educational_programmes
 
 
 def handle_student_name(message):

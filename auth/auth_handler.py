@@ -1,8 +1,8 @@
 from bot.bot import bot, CLIENT_URL, update_session_token
-from auth.AuthService import *
+from auth.auth_service import *
 from requests.exceptions import RequestException
-from menu.MenuHandler import show_main_menu
-from integration.IntegrationHandler import get_cloud_drive
+from menu.menu_handler import show_main_menu
+from integration.integration_handler import get_cloud_drive
 
 
 @bot.message_handler(content_types=["contact"])

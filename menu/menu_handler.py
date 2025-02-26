@@ -1,6 +1,6 @@
 from bot.bot import bot, CLIENT_URL
 import telebot.types
-from integration.IntegrationHandler import get_google_planner
+from integration.integration_handler import get_google_planner
 
 
 def show_main_menu(chat_id):

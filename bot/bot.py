@@ -3,7 +3,7 @@
 import telebot
 from dotenv import load_dotenv
 import os
-from SessionManager import SessionManager
+from session_manager import SessionManager
 
 load_dotenv()
 

@@ -1,10 +1,10 @@
 from telegram.constants import ParseMode
 
 from bot.bot import bot
-from meeting.MeetingService import *
+from meeting.meeting_service import *
 from datetime import datetime, timedelta
 import telebot
-from menu.MenuHandler import show_main_menu
+from menu.menu_handler import show_main_menu
 
 days_translation = {
     "Monday": "Понедельник",

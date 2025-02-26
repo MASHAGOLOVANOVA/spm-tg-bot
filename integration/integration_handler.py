@@ -1,4 +1,4 @@
-from integration.IntegrationService import *
+from integration.integration_service import *
 
 
 def get_cloud_drive():
