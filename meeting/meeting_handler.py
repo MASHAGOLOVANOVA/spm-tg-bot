@@ -43,21 +43,21 @@ def meeting_handler_init(bot):
 
         bot.send_message(call.message.chat.id, "Введите название встречи:")
         bot.register_next_step_handler(
-            call.message, handle_meeting_name, project_id, student_id
+            call.message, handle_meeting_name, bot, project_id, student_id
         )
 
 
-def handle_meeting_name(bot, message, project_id, student_id):
+def handle_meeting_name(message,bot,  project_id, student_id):
     """функция для получения названия встречи"""
     name = message.text  # Получаем название
 
     bot.send_message(message.chat.id, "Введите описание встречи:")
     bot.register_next_step_handler(
-        bot, message, handle_meeting_description, project_id, student_id, name
+        message, handle_meeting_description,bot,  project_id, student_id, name
     )
 
 
-def handle_meeting_description(bot, message, project_id, student_id, name):
+def handle_meeting_description(message,bot,  project_id, student_id, name):
     """функция для получения описания встречи"""
     desc = message.text  # Получаем название
     meeting_info = {
@@ -68,11 +68,11 @@ def handle_meeting_description(bot, message, project_id, student_id, name):
     }
     bot.send_message(message.chat.id, "Введите время встречи:")
     bot.register_next_step_handler(
-        message, handle_meeting_time, meeting_info
+        message, handle_meeting_time, bot, meeting_info
     )
 
 
-def handle_meeting_time(bot, message, meeting_info):
+def handle_meeting_time(message,bot,  meeting_info):
     """функция для получения времени встречи"""
     time = message.text
     try:
@@ -84,7 +84,7 @@ def handle_meeting_time(bot, message, meeting_info):
             reply_markup=get_meeting_format_markup(),
         )
         bot.register_next_step_handler(
-            bot, message, handle_meeting_format, meeting_info
+             message, handle_meeting_format, bot, meeting_info
         )
     except ValueError:
         bot.send_message(
@@ -92,11 +92,11 @@ def handle_meeting_time(bot, message, meeting_info):
             "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
         )
         bot.register_next_step_handler(
-            bot, message, handle_meeting_time, meeting_info
+            message, handle_meeting_time, bot, meeting_info
         )
 
 
-def handle_meeting_format(bot, message, meeting_info):
+def handle_meeting_format(message,bot,  meeting_info):
     """Функция для получения формата встречи."""
     meeting_format = message.text  # Получаем формат встречи
 
@@ -112,7 +112,7 @@ def handle_meeting_format(bot, message, meeting_info):
         # Формируем данные для новой встречи
         new_meeting_data = {
             "name": meeting_info["name"],
-            "description": meeting_info["desc"],
+            "description": meeting_info["description"],
             "project_id": int(meeting_info["project_id"]),
             "student_participant_id": int(meeting_info["student_id"]),
             "is_online": online,

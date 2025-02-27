@@ -59,17 +59,17 @@ def format_tasks_message(tasks):
     return tasks_message
 
 
-def handle_task_name(bot, message, project_id):
+def handle_task_name(message, bot, project_id):
     """функция для получения названия задачи"""
     task_name = message.text  # Получаем название задачи
 
     bot.send_message(message.chat.id, "Введите описание задачи:")
     bot.register_next_step_handler(
-        bot, message, handle_task_description, project_id, task_name
+        message, handle_task_description, bot, project_id, task_name
     )
 
 
-def handle_task_description(bot, message, project_id, task_name):
+def handle_task_description(message, bot, project_id, task_name):
     """функция для получения описания задачи"""
     task_description = message.text  # Получаем описание задачи
 
@@ -77,11 +77,11 @@ def handle_task_description(bot, message, project_id, task_name):
         message.chat.id, "Введите дедлайн задачи (в формате dd.mm.YYYY HH:MM):"
     )
     bot.register_next_step_handler(
-        bot, message, handle_task_deadline, project_id, task_name, task_description
+        message, handle_task_deadline, bot, project_id, task_name, task_description
     )
 
 
-def handle_task_deadline(bot, message, project_id, task_name, task_description):
+def handle_task_deadline(message, bot, project_id, task_name, task_description):
     """Функция для получения дедлайна задачи и добавления задачи в проект."""
     task_deadline_input = message.text  # Получаем дедлайн задачи
     try:
@@ -106,5 +106,5 @@ def handle_task_deadline(bot, message, project_id, task_name, task_description):
             "Неверный формат даты. Пожалуйста, используйте формат dd.mm.YYYY HH:MM.",
         )
         bot.register_next_step_handler(
-            bot, message, handle_task_deadline, project_id, task_name, task_description
+            message, bot, handle_task_deadline, project_id, task_name, task_description
         )

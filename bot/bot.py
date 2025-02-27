@@ -3,6 +3,8 @@
 import os
 import telebot
 from dotenv import load_dotenv
+from telebot.handler_backends import State, StatesGroup
+
 from session_manager import SessionManager
 
 load_dotenv()
@@ -18,3 +20,8 @@ sessionManager.set_bot_token(BOT_TOKEN)
 def update_session_token(new_token):
     """# Функция для обновления session_token"""
     sessionManager.set_session_token(new_token)
+
+
+class UserStates(StatesGroup):
+    WAITING_FOR_TASK_NAME = State()
+    WAITING_FOR_MEETING = State()
