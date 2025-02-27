@@ -9,18 +9,19 @@ from meeting.meeting_service import get_meetings, add_meeting
 from menu.menu_handler import show_main_menu
 
 days_translation = {
-        "Monday": "Понедельник",
-        "Tuesday": "Вторник",
-        "Wednesday": "Среда",
-        "Thursday": "Четверг",
-        "Friday": "Пятница",
-        "Saturday": "Суббота",
-        "Sunday": "Воскресенье",
-    }
+    "Monday": "Понедельник",
+    "Tuesday": "Вторник",
+    "Wednesday": "Среда",
+    "Thursday": "Четверг",
+    "Friday": "Пятница",
+    "Saturday": "Суббота",
+    "Sunday": "Воскресенье",
+}
 
 
 def meeting_handler_init(bot):
     """Хендлер init"""
+
     @bot.message_handler(func=lambda message: message.text == "Мои встречи")
     def handle_meetings(message):
         """Хендлер встреч"""
@@ -45,82 +46,86 @@ def meeting_handler_init(bot):
             call.message, handle_meeting_name, project_id, student_id
         )
 
-    def handle_meeting_name(message, project_id, student_id):
-        """функция для получения названия встречи"""
-        name = message.text  # Получаем название
 
-        bot.send_message(message.chat.id, "Введите описание встречи:")
+def handle_meeting_name(bot, message, project_id, student_id):
+    """функция для получения названия встречи"""
+    name = message.text  # Получаем название
+
+    bot.send_message(message.chat.id, "Введите описание встречи:")
+    bot.register_next_step_handler(
+        bot, message, handle_meeting_description, project_id, student_id, name
+    )
+
+
+def handle_meeting_description(bot, message, project_id, student_id, name):
+    """функция для получения описания встречи"""
+    desc = message.text  # Получаем название
+
+    bot.send_message(message.chat.id, "Введите время встречи:")
+    bot.register_next_step_handler(
+        message, handle_meeting_time, project_id, student_id, name, desc
+    )
+
+
+def handle_meeting_time(bot, message, project_id, student_id, name, desc):
+    """функция для получения времени встречи"""
+    time = message.text
+    try:
+        iso_time = (datetime.strptime(time, "%d.%m.%Y %H:%M")).isoformat()
+
+        bot.send_message(
+            message.chat.id,
+            "Выберите формат встречи:",
+            reply_markup=get_meeting_format_markup(),
+        )
+        meeting_options = {"name": name, "desc": desc}
         bot.register_next_step_handler(
-            message, handle_meeting_description, project_id, student_id, name
+            bot, message, handle_meeting_format, project_id, student_id, meeting_options, iso_time
+        )
+    except ValueError:
+        bot.send_message(
+            message.chat.id,
+            "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
+        )
+        bot.register_next_step_handler(
+            bot, message, handle_meeting_time, project_id, student_id, name, desc
         )
 
-    def handle_meeting_description(message, project_id, student_id, name):
-        """функция для получения описания встречи"""
-        desc = message.text  # Получаем название
 
-        bot.send_message(message.chat.id, "Введите время встречи:")
-        bot.register_next_step_handler(
-            message, handle_meeting_time, project_id, student_id, name, desc
+def handle_meeting_format(bot, message, project_id, student_id, meeting_options, time):
+    """Функция для получения формата встречи."""
+    meeting_format = message.text  # Получаем формат встречи
+
+    if meeting_format not in ["Онлайн", "Оффлайн"]:
+        bot.send_message(
+            message.chat.id,
+            "Пожалуйста, выберите корректный формат встречи: Онлайн или Оффлайн.",
         )
+        return  # Завершаем выполнение функции, если формат некорректный
 
-    def handle_meeting_time(message, project_id, student_id, name, desc):
-        """функция для получения времени встречи"""
-        time = message.text
-        try:
-            iso_time = (datetime.strptime(time, "%d.%m.%Y %H:%M")).isoformat()
+    try:
+        online = meeting_format == "Онлайн"  # Устанавливаем значение is_online
+        # Формируем данные для новой встречи
+        new_meeting_data = {
+            "name": meeting_options["name"],
+            "description": meeting_options["desc"],
+            "project_id": int(project_id),
+            "student_participant_id": int(student_id),
+            "is_online": online,
+            "meeting_time": time + "Z",  # Преобразуем в строку ISO 8601
+        }
 
-            bot.send_message(
-                message.chat.id,
-                "Выберите формат встречи:",
-                reply_markup=get_meeting_format_markup(),
-            )
-            meeting_options = {"name": name, "desc": desc}
-            bot.register_next_step_handler(
-                message, handle_meeting_format, project_id, student_id, meeting_options, iso_time
-            )
-        except ValueError:
-            bot.send_message(
-                message.chat.id,
-                "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
-            )
-            bot.register_next_step_handler(
-                message, handle_meeting_time, project_id, student_id, name, desc
-            )
+        # Отправляем запрос на создание встречи
+        if add_meeting(new_meeting_data):
+            bot.send_message(message.chat.id, "Встреча успешно добавлена!")
 
-    def handle_meeting_format(message, project_id, student_id, meeting_options, time):
-        """Функция для получения формата встречи."""
-        meeting_format = message.text  # Получаем формат встречи
-
-        if meeting_format not in ["Онлайн", "Оффлайн"]:
-            bot.send_message(
-                message.chat.id,
-                "Пожалуйста, выберите корректный формат встречи: Онлайн или Оффлайн.",
-            )
-            return  # Завершаем выполнение функции, если формат некорректный
-
-        try:
-            online = meeting_format == "Онлайн"  # Устанавливаем значение is_online
-            # Формируем данные для новой встречи
-            new_meeting_data = {
-                "name": meeting_options["name"],
-                "description": meeting_options["desc"],
-                "project_id": int(project_id),
-                "student_participant_id": int(student_id),
-                "is_online": online,
-                "meeting_time": time + "Z",  # Преобразуем в строку ISO 8601
-            }
-
-            # Отправляем запрос на создание встречи
-            if add_meeting(new_meeting_data):
-                bot.send_message(message.chat.id, "Встреча успешно добавлена!")
-
-        except ValueError:
-            bot.send_message(
-                message.chat.id,
-                "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
-            )
-        finally:
-            show_main_menu(message.chat.id)
+    except ValueError:
+        bot.send_message(
+            message.chat.id,
+            "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
+        )
+    finally:
+        show_main_menu(message.chat.id)
 
 
 def get_meeting_format_markup():
