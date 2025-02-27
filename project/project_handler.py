@@ -74,82 +74,6 @@ def projects_handler_init(bot):
         )
         bot.register_next_step_handler(message, handle_student_selection, bot)
 
-    def handle_student_selection(bot, message):
-        """функция для выбора студента"""
-        student_name = message.text
-        if student_name == "Добавить нового студента...":
-            bot.send_message(message.chat.id, "Введите имя нового студента:")
-            bot.register_next_step_handler(message, handle_student_name)
-            return
-        # Здесь вы можете добавить проверку на наличие выбранного студента в списке
-        # Например, если у вас есть список студентов в виде словаря
-        students = get_students()
-
-        selected_student = next(
-            (s for s in students
-             if (s["surname"] + " " + s["name"] + " " + s["middlename"]) == student_name), None
-        )
-
-        if selected_student is None:
-            bot.send_message(
-                message.chat.id,
-                "Выбранный студент не найден. Пожалуйста, попробуйте снова.",
-            )
-            show_main_menu(message.chat.id)
-            return
-
-        bot.send_message(message.chat.id, "Введите тему нового проекта:")
-        bot.register_next_step_handler(
-            message, lambda msg: handle_project_theme(msg, selected_student)
-        )
-
-    def handle_project_theme(message, student):
-        """функция для выбора темы проекта"""
-        project_theme = message.text
-        bot.send_message(message.chat.id, "Введите год проекта (число):")
-        bot.register_next_step_handler(
-            message, lambda msg: handle_project_year(msg, student, project_theme)
-        )
-
-    def handle_project_year(message, student, project_theme):
-        """функция для выбора года проекта"""
-        try:
-            project_year = int(message.text)
-            bot.send_message(message.chat.id, "Введите владельца репозитория (логин):")
-            bot.register_next_step_handler(
-                message,
-                lambda msg: handle_repo_owner(msg, student, project_theme, project_year),
-            )
-        except ValueError:
-            bot.send_message(
-                message.chat.id, "Год должен быть числом. Пожалуйста, попробуйте снова."
-            )
-            handle_project_year(message, student, project_theme)
-
-    def handle_repo_owner(message, student, project_theme, project_year):
-        """функция для выбора владельца проекта"""
-        repo_owner = message.text
-        bot.send_message(message.chat.id, "Введите имя репозитория:")
-        bot.register_next_step_handler(
-            message,
-            lambda msg: handle_repository_name(
-                msg, student, project_theme, project_year, repo_owner
-            ),
-        )
-
-    def handle_repository_name(message, student, project_theme, project_year, repo_owner):
-        """Обработчик для ввода имени репозитория."""
-        repository_name = message.text
-
-        response_message = add_project(
-            project_theme, student["id"], project_year, repo_owner, repository_name
-        )
-
-        bot.send_message(message.chat.id, response_message)
-
-        # Вернуться в главное меню после добавления проекта
-        show_main_menu(message.chat.id)
-
     @bot.callback_query_handler(func=lambda call: call.data.startswith("project_"))
     def handle_project_details(call):
         """Хендлер для просмотра информации о проекте"""
@@ -356,3 +280,84 @@ def create_markup(bot, project_details, chat_id):
         markup.add(button1, button3, button4, button5)
 
     return markup
+
+
+def handle_student_selection(bot, message):
+    """функция для выбора студента"""
+    student_name = message.text
+    if student_name == "Добавить нового студента...":
+        bot.send_message(message.chat.id, "Введите имя нового студента:")
+        bot.register_next_step_handler(message, handle_student_name)
+        return
+    # Здесь вы можете добавить проверку на наличие выбранного студента в списке
+    # Например, если у вас есть список студентов в виде словаря
+    students = get_students()
+
+    selected_student = next(
+        (s for s in students
+         if (s["surname"] + " " + s["name"] + " " + s["middlename"]) == student_name), None
+    )
+
+    if selected_student is None:
+        bot.send_message(
+            message.chat.id,
+            "Выбранный студент не найден. Пожалуйста, попробуйте снова.",
+        )
+        show_main_menu(message.chat.id)
+        return
+
+    bot.send_message(message.chat.id, "Введите тему нового проекта:")
+    bot.register_next_step_handler(
+        message, lambda msg: handle_project_theme(bot, msg, selected_student)
+    )
+
+
+def handle_project_theme(bot, message, student):
+    """функция для выбора темы проекта"""
+    project_theme = message.text
+    bot.send_message(message.chat.id, "Введите год проекта (число):")
+    bot.register_next_step_handler(
+        message, lambda msg: handle_project_year(bot, msg, student, project_theme)
+    )
+
+
+def handle_project_year(bot, message, student, project_theme):
+    """функция для выбора года проекта"""
+    try:
+        project_year = int(message.text)
+        bot.send_message(message.chat.id, "Введите владельца репозитория (логин):")
+        bot.register_next_step_handler(
+            message,
+            lambda msg: handle_repo_owner(msg, student, project_theme, project_year),
+        )
+    except ValueError:
+        bot.send_message(
+            message.chat.id, "Год должен быть числом. Пожалуйста, попробуйте снова."
+        )
+        handle_project_year(bot, message, student, project_theme)
+
+
+def handle_repo_owner(bot, message, student, project_theme, project_year):
+    """функция для выбора владельца проекта"""
+    repo_owner = message.text
+    bot.send_message(message.chat.id, "Введите имя репозитория:")
+    bot.register_next_step_handler(
+        message,
+        lambda msg: handle_repository_name(
+            bot, msg, student, project_theme, project_year, repo_owner
+        ),
+    )
+
+
+def handle_repository_name(bot, message, student, project_theme, project_year, repo_owner):
+    """Обработчик для ввода имени репозитория."""
+    repository_name = message.text
+
+    response_message = add_project(
+        project_theme, student["id"], project_year, repo_owner, repository_name
+    )
+
+    bot.send_message(message.chat.id, response_message)
+
+    # Вернуться в главное меню после добавления проекта
+    show_main_menu(message.chat.id)
