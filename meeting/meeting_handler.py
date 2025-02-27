@@ -60,24 +60,23 @@ def handle_meeting_name(bot, message, project_id, student_id):
 def handle_meeting_description(bot, message, project_id, student_id, name):
     """функция для получения описания встречи"""
     desc = message.text  # Получаем название
-
+    meeting_info = {
+        "name": name,
+        "description": desc,
+        "project_id": project_id
+    }
     bot.send_message(message.chat.id, "Введите время встречи:")
     bot.register_next_step_handler(
-        message, handle_meeting_time, project_id, student_id, name, desc
+        message, handle_meeting_time, project_id, meeting_info
     )
 
 
-def handle_meeting_time(bot, message, project_id, student_id, name, desc):
+def handle_meeting_time(bot, message, project_id, meeting_info):
     """функция для получения времени встречи"""
     time = message.text
     try:
         iso_time = (datetime.strptime(time, "%d.%m.%Y %H:%M")).isoformat()
-        meeting_info = {
-            "start_time": iso_time,
-            "name": name,
-            "description": desc,
-            "project_id": project_id
-        }
+        meeting_info["start_time"] = iso_time
         bot.send_message(
             message.chat.id,
             "Выберите формат встречи:",
@@ -92,7 +91,7 @@ def handle_meeting_time(bot, message, project_id, student_id, name, desc):
             "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
         )
         bot.register_next_step_handler(
-            bot, message, handle_meeting_time, project_id, student_id, name, desc
+            bot, message, handle_meeting_time, project_id, meeting_info
         )
 
 

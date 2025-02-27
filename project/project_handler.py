@@ -338,7 +338,7 @@ def handle_repository_name(bot, message, project_info):
 
     response_message = add_project(
         project_info["project_theme"], project_info["student"]["id"],
-        project_info["project_year"], project_info["repo_owner"], project_info["repository_name"]
+        project_info["project_year"], project_info["repo_owner"], repository_name
     )
 
     bot.send_message(message.chat.id, response_message)
