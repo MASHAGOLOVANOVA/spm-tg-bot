@@ -21,30 +21,7 @@ def projects_handler_init(bot):
     @bot.message_handler(func=lambda message: message.text == "Мои проекты")
     def handle_projects_command(message):
         """Команда для обработки запроса на проекты."""
-        handle_projects(message)
-
-    def handle_projects(message):
-        """Хендлер проектов"""
-        try:
-            projects = get_projects()
-
-            if projects:  # Проверяем, есть ли проекты в списке
-                for project in projects:
-                    project_card = create_project_card(project)
-
-                    # Создаем кнопку для каждого проекта
-                    markup = telebot.types.InlineKeyboardMarkup()
-                    button = telebot.types.InlineKeyboardButton(
-                        "Подробнее", callback_data=f"project_{project['id']}"
-                    )
-                    markup.add(button)
-
-                    # Отправляем сообщение с карточкой и кнопкой
-                    bot.send_message(message.chat.id, project_card, reply_markup=markup)
-            else:
-                bot.send_message(message.chat.id, "У вас нет проектов.")
-        except RequestException as e:
-            bot.send_message(message.chat.id, f"Ошибка: {str(e)}")
+        handle_projects(bot, message)
 
     @bot.message_handler(func=lambda message: message.text == "Добавить проект")
     def new_project(message):
@@ -361,3 +338,27 @@ def handle_repository_name(bot, message, student, project_theme, project_year, r
 
     # Вернуться в главное меню после добавления проекта
     show_main_menu(message.chat.id)
+
+
+def handle_projects(bot, message):
+    """Хендлер проектов"""
+    try:
+        projects = get_projects()
+
+        if projects:  # Проверяем, есть ли проекты в списке
+            for project in projects:
+                project_card = create_project_card(project)
+
+                # Создаем кнопку для каждого проекта
+                markup = telebot.types.InlineKeyboardMarkup()
+                button = telebot.types.InlineKeyboardButton(
+                    "Подробнее", callback_data=f"project_{project['id']}"
+                )
+                markup.add(button)
+
+                # Отправляем сообщение с карточкой и кнопкой
+                bot.send_message(message.chat.id, project_card, reply_markup=markup)
+        else:
+            bot.send_message(message.chat.id, "У вас нет проектов.")
+    except RequestException as e:
+        bot.send_message(message.chat.id, f"Ошибка: {str(e)}")
