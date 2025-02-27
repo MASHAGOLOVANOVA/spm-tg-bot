@@ -72,9 +72,9 @@ def projects_handler_init(bot):
         bot.send_message(
             message.chat.id, "Выберите студента для проекта:", reply_markup=keyboard
         )
-        bot.register_next_step_handler(message, handle_student_selection)
+        bot.register_next_step_handler(message, handle_student_selection, bot)
 
-    def handle_student_selection(message):
+    def handle_student_selection(bot, message):
         """функция для выбора студента"""
         student_name = message.text
         if student_name == "Добавить нового студента...":
@@ -161,7 +161,7 @@ def projects_handler_init(bot):
             project_details = response.json()
 
             details_message = format_project_details(project_details)  # Форматируем сообщение
-            markup = create_markup(project_details, call.message.chat.id)  # Создаем кнопки
+            markup = create_markup(bot, project_details, call.message.chat.id)  # Создаем кнопки
 
             bot.send_message(
                 call.message.chat.id,
@@ -175,43 +175,6 @@ def projects_handler_init(bot):
                 f"Ошибка при получении деталей проекта: {response.status_code}",
             )
         bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
-
-    def create_markup(project_details, chat_id):
-        """Создает кнопки для взаимодействия с проектом."""
-        markup = telebot.types.InlineKeyboardMarkup()
-        button1 = telebot.types.InlineKeyboardButton(
-            "Статистика", callback_data=f"statistics_project_{project_details['id']}"
-        )
-        button2 = telebot.types.InlineKeyboardButton(
-            "Коммиты", callback_data=f"commits_project_{project_details['id']}"
-        )
-        button3 = telebot.types.InlineKeyboardButton(
-            "Задания", callback_data=f"tasks_project_{project_details['id']}"
-        )
-        button4 = telebot.types.InlineKeyboardButton(
-            "Назначить задание",
-            callback_data=f"add_task_project_{project_details['id']}",
-        )
-        button5 = telebot.types.InlineKeyboardButton(
-            "Назначить встречу",
-            callback_data="add_meeting_project_"
-                          + f"{project_details['id']}_student_{project_details['student']['id']}",
-        )
-
-        if get_repohub() is not None:
-            markup.add(button1, button2, button3, button4, button5)
-        else:
-            # Если репозиторий не подключен, добавляем только доступные кнопки
-            bot.send_message(
-                chat_id,
-                f"""Вам недоступны коммиты проекта, подключите интеграцию
-    с Github в личном кабинете в веб-приложении: <a href='{CLIENT_URL}/profile/integrations'>
-    Перейти к интеграциям</a>""",
-                parse_mode="HTML",
-            )
-            markup.add(button1, button3, button4, button5)
-
-        return markup
 
     @bot.callback_query_handler(
         func=lambda call: call.data.startswith("statistics_project_")
@@ -355,3 +318,41 @@ def format_project_details(project_details):
 def create_project_card(project):
     """Создает текст карточки проекта."""
     return f"""Тема: {project['theme']}\nГод: {project['year']}"""
+
+
+def create_markup(bot, project_details, chat_id):
+    """Создает кнопки для взаимодействия с проектом."""
+    markup = telebot.types.InlineKeyboardMarkup()
+    button1 = telebot.types.InlineKeyboardButton(
+        "Статистика", callback_data=f"statistics_project_{project_details['id']}"
+    )
+    button2 = telebot.types.InlineKeyboardButton(
+        "Коммиты", callback_data=f"commits_project_{project_details['id']}"
+    )
+    button3 = telebot.types.InlineKeyboardButton(
+        "Задания", callback_data=f"tasks_project_{project_details['id']}"
+    )
+    button4 = telebot.types.InlineKeyboardButton(
+        "Назначить задание",
+        callback_data=f"add_task_project_{project_details['id']}",
+    )
+    button5 = telebot.types.InlineKeyboardButton(
+        "Назначить встречу",
+        callback_data="add_meeting_project_"
+                      + f"{project_details['id']}_student_{project_details['student']['id']}",
+    )
+
+    if get_repohub() is not None:
+        markup.add(button1, button2, button3, button4, button5)
+    else:
+        # Если репозиторий не подключен, добавляем только доступные кнопки
+        bot.send_message(
+            chat_id,
+            f"""Вам недоступны коммиты проекта, подключите интеграцию
+с Github в личном кабинете в веб-приложении: <a href='{CLIENT_URL}/profile/integrations'>
+Перейти к интеграциям</a>""",
+            parse_mode="HTML",
+        )
+        markup.add(button1, button3, button4, button5)
+
+    return markup
