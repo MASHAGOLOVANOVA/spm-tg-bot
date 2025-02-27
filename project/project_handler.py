@@ -17,11 +17,11 @@ from integration.integration_handler import get_repohub
 
 def projects_handler_init(bot):
     """Хендлер init"""
+
     @bot.message_handler(func=lambda message: message.text == "Мои проекты")
     def handle_projects_command(message):
         """Команда для обработки запроса на проекты."""
         handle_projects(message)
-
 
     def handle_projects(message):
         """Хендлер проектов"""
@@ -45,12 +45,6 @@ def projects_handler_init(bot):
                 bot.send_message(message.chat.id, "У вас нет проектов.")
         except RequestException as e:
             bot.send_message(message.chat.id, f"Ошибка: {str(e)}")
-
-
-    def create_project_card(project):
-        """Создает текст карточки проекта."""
-        return f"""Тема: {project['theme']}\nГод: {project['year']}"""
-
 
     @bot.message_handler(func=lambda message: message.text == "Добавить проект")
     def new_project(message):
@@ -79,7 +73,6 @@ def projects_handler_init(bot):
             message.chat.id, "Выберите студента для проекта:", reply_markup=keyboard
         )
         bot.register_next_step_handler(message, handle_student_selection)
-
 
     def handle_student_selection(message):
         """функция для выбора студента"""
@@ -110,7 +103,6 @@ def projects_handler_init(bot):
             message, lambda msg: handle_project_theme(msg, selected_student)
         )
 
-
     def handle_project_theme(message, student):
         """функция для выбора темы проекта"""
         project_theme = message.text
@@ -118,7 +110,6 @@ def projects_handler_init(bot):
         bot.register_next_step_handler(
             message, lambda msg: handle_project_year(msg, student, project_theme)
         )
-
 
     def handle_project_year(message, student, project_theme):
         """функция для выбора года проекта"""
@@ -135,7 +126,6 @@ def projects_handler_init(bot):
             )
             handle_project_year(message, student, project_theme)
 
-
     def handle_repo_owner(message, student, project_theme, project_year):
         """функция для выбора владельца проекта"""
         repo_owner = message.text
@@ -146,7 +136,6 @@ def projects_handler_init(bot):
                 msg, student, project_theme, project_year, repo_owner
             ),
         )
-
 
     def handle_repository_name(message, student, project_theme, project_year, repo_owner):
         """Обработчик для ввода имени репозитория."""
@@ -160,7 +149,6 @@ def projects_handler_init(bot):
 
         # Вернуться в главное меню после добавления проекта
         show_main_menu(message.chat.id)
-
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("project_"))
     def handle_project_details(call):
@@ -187,35 +175,6 @@ def projects_handler_init(bot):
                 f"Ошибка при получении деталей проекта: {response.status_code}",
             )
         bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id)
-
-
-    def format_project_details(project_details):
-        """Форматирует детали проекта для отправки пользователю."""
-        student = project_details["student"]
-        student_str = f"{student['surname']} {student['name']} {student['middlename']}"
-        theme = project_details["theme"]
-        details_message = (
-                "*Тема:* "
-                + theme
-                + "\n"
-                + "*Год:* "
-                + str(project_details["year"])
-                + "\n"
-                + "*Студент:* "
-                + student_str
-                + "\n"
-                + "*Статус проекта:* "
-                + project_details["status"]
-                + "\n"
-                + "*Стадия работы:* "
-                + project_details["stage"]
-                + "\n"
-                + "*Ссылка на Google Drive:* [Перейти к папке]("
-                + project_details["cloud_folder_link"]
-                + ")\n"
-        )
-        return details_message
-
 
     def create_markup(project_details, chat_id):
         """Создает кнопки для взаимодействия с проектом."""
@@ -254,7 +213,6 @@ def projects_handler_init(bot):
 
         return markup
 
-
     @bot.callback_query_handler(
         func=lambda call: call.data.startswith("statistics_project_")
     )
@@ -273,55 +231,6 @@ def projects_handler_init(bot):
                 call.message.chat.id,
                 f"Ошибка при получении статистики проекта: {response.status_code}",
             )
-
-
-    def format_statistics_message(statistics):
-        """Форматирует сообщение со статистикой проекта."""
-        total_meetings = statistics.get("total_meetings", 0)
-        total_tasks = statistics.get("total_tasks", 0)
-        tasks_done = statistics.get("tasks_done", 0)
-        tasks_done_percent = statistics.get("tasks_done_percent", 0)
-
-        stats_message = (
-            "*Статистика по проекту:*\n\n"
-            f"📅 *Общее количество встреч:* {total_meetings}\n"
-            f"📋 *Общее количество задач:* {total_tasks}\n"
-            f"✅ *Завершенные задачи:* {tasks_done} ({tasks_done_percent}%)\n\n"
-        )
-
-        grades = statistics.get("grades", {})
-        if grades:
-            stats_message += format_grades(grades)
-        else:
-            stats_message += "Оценки отсутствуют.\n"
-        return stats_message
-
-
-    def format_grades(grades):
-        """Форматирует сообщение с оценками."""
-        defence_grade = grades.get("defence_grade", "Нет оценки")
-        supervisor_grade = grades.get("supervisor_grade", "Нет оценки")
-        final_grade = grades.get("final_grade", "Нет оценки")
-        supervisor_review = grades.get("supervisor_review", {})
-        grades_message = (
-            "*Оценки:*\n"
-            f"🎓 *Защита:* {defence_grade}\n"
-            f"👨‍🏫 *Оценка руководителя:* {supervisor_grade}\n"
-            f"🏆 *Итоговая оценка:* {final_grade}\n\n"
-        )
-        if supervisor_review:
-            review_criterias = supervisor_review.get("criterias", [])
-            if review_criterias:
-                grades_message += "*Критерии оценки:*\n"
-                for criteria in review_criterias:
-                    criteria_name = criteria.get("criteria", "Не указано")
-                    criteria_grade = criteria.get("grade", "Не указано")
-                    criteria_weight = criteria.get("weight", "Не указано")
-                    grades_message += f"- {criteria_name}:"
-                    grades_message += f" Оценка {criteria_grade} (Вес: {criteria_weight})\n"
-
-        return grades_message
-
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("commits_project_"))
     def handle_project_commits(call):
@@ -352,16 +261,97 @@ def projects_handler_init(bot):
             )
 
 
-    def format_commit_message(commit):
-        """Форматирует сообщение о коммите."""
-        commit_sha = commit.get("commit_sha", "Не указано")
-        message = commit.get("message", "Не указано")
-        date_created = commit.get("date_created", "Не указано")
-        created_by = commit.get("created_by", "Не указано")
-        formatted_date = datetime.fromisoformat(date_created[:-1]).strftime("%Y-%m-%d %H:%M:%S")
-        return (
-            f"🔹 *SHA:* {commit_sha}\n"
-            f"📝 *Сообщение:* {message}\n"
-            f"📅 *Дата создания:* {formatted_date}\n"
-            f"👤 *Создано пользователем:* {created_by}\n\n"
-        )
+def format_commit_message(commit):
+    """Форматирует сообщение о коммите."""
+    commit_sha = commit.get("commit_sha", "Не указано")
+    message = commit.get("message", "Не указано")
+    date_created = commit.get("date_created", "Не указано")
+    created_by = commit.get("created_by", "Не указано")
+    formatted_date = datetime.fromisoformat(date_created[:-1]).strftime("%Y-%m-%d %H:%M:%S")
+    return (
+        f"🔹 *SHA:* {commit_sha}\n"
+        f"📝 *Сообщение:* {message}\n"
+        f"📅 *Дата создания:* {formatted_date}\n"
+        f"👤 *Создано пользователем:* {created_by}\n\n"
+    )
+
+
+def format_grades(grades):
+    """Форматирует сообщение с оценками."""
+    defence_grade = grades.get("defence_grade", "Нет оценки")
+    supervisor_grade = grades.get("supervisor_grade", "Нет оценки")
+    final_grade = grades.get("final_grade", "Нет оценки")
+    supervisor_review = grades.get("supervisor_review", {})
+    grades_message = (
+        "*Оценки:*\n"
+        f"🎓 *Защита:* {defence_grade}\n"
+        f"👨‍🏫 *Оценка руководителя:* {supervisor_grade}\n"
+        f"🏆 *Итоговая оценка:* {final_grade}\n\n"
+    )
+    if supervisor_review:
+        review_criterias = supervisor_review.get("criterias", [])
+        if review_criterias:
+            grades_message += "*Критерии оценки:*\n"
+            for criteria in review_criterias:
+                criteria_name = criteria.get("criteria", "Не указано")
+                criteria_grade = criteria.get("grade", "Не указано")
+                criteria_weight = criteria.get("weight", "Не указано")
+                grades_message += f"- {criteria_name}:"
+                grades_message += f" Оценка {criteria_grade} (Вес: {criteria_weight})\n"
+
+    return grades_message
+
+
+def format_statistics_message(statistics):
+    """Форматирует сообщение со статистикой проекта."""
+    total_meetings = statistics.get("total_meetings", 0)
+    total_tasks = statistics.get("total_tasks", 0)
+    tasks_done = statistics.get("tasks_done", 0)
+    tasks_done_percent = statistics.get("tasks_done_percent", 0)
+
+    stats_message = (
+        "*Статистика по проекту:*\n\n"
+        f"📅 *Общее количество встреч:* {total_meetings}\n"
+        f"📋 *Общее количество задач:* {total_tasks}\n"
+        f"✅ *Завершенные задачи:* {tasks_done} ({tasks_done_percent}%)\n\n"
+    )
+
+    grades = statistics.get("grades", {})
+    if grades:
+        stats_message += format_grades(grades)
+    else:
+        stats_message += "Оценки отсутствуют.\n"
+    return stats_message
+
+
+def format_project_details(project_details):
+    """Форматирует детали проекта для отправки пользователю."""
+    student = project_details["student"]
+    student_str = f"{student['surname']} {student['name']} {student['middlename']}"
+    theme = project_details["theme"]
+    details_message = (
+            "*Тема:* "
+            + theme
+            + "\n"
+            + "*Год:* "
+            + str(project_details["year"])
+            + "\n"
+            + "*Студент:* "
+            + student_str
+            + "\n"
+            + "*Статус проекта:* "
+            + project_details["status"]
+            + "\n"
+            + "*Стадия работы:* "
+            + project_details["stage"]
+            + "\n"
+            + "*Ссылка на Google Drive:* [Перейти к папке]("
+            + project_details["cloud_folder_link"]
+            + ")\n"
+    )
+    return details_message
+
+
+def create_project_card(project):
+    """Создает текст карточки проекта."""
+    return f"""Тема: {project['theme']}\nГод: {project['year']}"""
