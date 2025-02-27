@@ -16,6 +16,7 @@ from integration.integration_handler import get_repohub
 
 
 def projects_handler_init(bot):
+    """Хендлер init"""
     @bot.message_handler(func=lambda message: message.text == "Мои проекты")
     def handle_projects_command(message):
         """Команда для обработки запроса на проекты."""

@@ -7,6 +7,7 @@ from task.task_service import get_project_tasks, add_task_to_project
 
 
 def task_handler_init(bot):
+    """Хендлер init"""
     @bot.callback_query_handler(func=lambda call: call.data.startswith("add_task_project_"))
     def handle_project_new_task(call):
         """Хендлер для добавления задачи"""

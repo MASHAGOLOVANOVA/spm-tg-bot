@@ -5,6 +5,7 @@ import telebot
 
 
 def command_handler_init(bot):
+    """Хендлер init"""
     @bot.message_handler(commands=["start"])
     def start_message(message):
         """Хендлер команды start"""

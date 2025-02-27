@@ -12,6 +12,7 @@ from integration.integration_handler import get_cloud_drive
 
 
 def auth_handler_init(bot):
+    """Хендлер init"""
     @bot.message_handler(content_types=["contact"])
     def handle_contact(message):
         """Хендлер contact"""

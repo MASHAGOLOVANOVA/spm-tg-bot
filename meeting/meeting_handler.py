@@ -10,6 +10,8 @@ from menu.menu_handler import show_main_menu
 
 
 def meeting_handler_init(bot):
+    """Хендлер init"""
+
     days_translation = {
         "Monday": "Понедельник",
         "Tuesday": "Вторник",
