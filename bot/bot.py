@@ -19,4 +19,3 @@ sessionManager.set_bot_token(BOT_TOKEN)
 def update_session_token(new_token):
     """# Функция для обновления session_token"""
     sessionManager.set_session_token(new_token)
-
