@@ -116,7 +116,7 @@ def handle_meeting_format(message,bot,  meeting_info):
             "project_id": int(meeting_info["project_id"]),
             "student_participant_id": int(meeting_info["student_id"]),
             "is_online": online,
-            "meeting_time": meeting_info["time"] + "Z",  # Преобразуем в строку ISO 8601
+            "meeting_time": meeting_info["start_time"] + "Z",  # Преобразуем в строку ISO 8601
         }
 
         # Отправляем запрос на создание встречи

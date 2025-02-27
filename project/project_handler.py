@@ -21,7 +21,7 @@ def projects_handler_init(bot):
     @bot.message_handler(func=lambda message: message.text == "Мои проекты")
     def handle_projects_command(message):
         """Команда для обработки запроса на проекты."""
-        handle_projects(bot, message)
+        handle_projects(message,bot)
 
     @bot.message_handler(func=lambda message: message.text == "Добавить проект")
     def new_project(message):
@@ -259,7 +259,7 @@ def create_markup(bot, project_details, chat_id):
     return markup
 
 
-def handle_student_selection(bot, message):
+def handle_student_selection(message, bot):
     """функция для выбора студента"""
     student_name = message.text
     if student_name == "Добавить нового студента...":
@@ -285,36 +285,36 @@ def handle_student_selection(bot, message):
 
     bot.send_message(message.chat.id, "Введите тему нового проекта:")
     bot.register_next_step_handler(
-        message, lambda msg: handle_project_theme(bot, msg, selected_student)
+        message, lambda msg: handle_project_theme(msg, bot, selected_student)
     )
 
 
-def handle_project_theme(bot, message, student):
+def handle_project_theme(message, bot, student):
     """функция для выбора темы проекта"""
     project_theme = message.text
     bot.send_message(message.chat.id, "Введите год проекта (число):")
     bot.register_next_step_handler(
-        message, lambda msg: handle_project_year(bot, msg, student, project_theme)
+        message, lambda msg: handle_project_year(msg, bot, student, project_theme)
     )
 
 
-def handle_project_year(bot, message, student, project_theme):
+def handle_project_year(message, bot, student, project_theme):
     """функция для выбора года проекта"""
     try:
         project_year = int(message.text)
         bot.send_message(message.chat.id, "Введите владельца репозитория (логин):")
         bot.register_next_step_handler(
             message,
-            lambda msg: handle_repo_owner(bot, msg, student, project_theme, project_year),
+            lambda msg: handle_repo_owner(msg, bot, student, project_theme, project_year),
         )
     except ValueError:
         bot.send_message(
             message.chat.id, "Год должен быть числом. Пожалуйста, попробуйте снова."
         )
-        handle_project_year(bot, message, student, project_theme)
+        handle_project_year(message, bot, student, project_theme)
 
 
-def handle_repo_owner(bot, message, student, project_theme, project_year):
+def handle_repo_owner(message, bot, student, project_theme, project_year):
     """функция для выбора владельца проекта"""
     repo_owner = message.text
     project_info = {
@@ -327,12 +327,12 @@ def handle_repo_owner(bot, message, student, project_theme, project_year):
     bot.register_next_step_handler(
         message,
         lambda msg: handle_repository_name(
-            bot, msg, project_info
+            msg, bot, project_info
         ),
     )
 
 
-def handle_repository_name(bot, message, project_info):
+def handle_repository_name(message, bot, project_info):
     """Обработчик для ввода имени репозитория."""
     repository_name = message.text
 
@@ -347,7 +347,7 @@ def handle_repository_name(bot, message, project_info):
     show_main_menu(message.chat.id)
 
 
-def handle_projects(bot, message):
+def handle_projects(message, bot):
     """Хендлер проектов"""
     try:
         projects = get_projects()
