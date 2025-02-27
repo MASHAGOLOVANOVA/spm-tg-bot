@@ -23,7 +23,7 @@ def auth_handler_init(bot):
 
         # Создаем данные для отправки на сервер
         credentials = {"phone_number": phone_number}
-        verify_number(message, credentials)
+        verify_number(bot, message, credentials)
 
 
 def verify_number(bot, message, credentials):

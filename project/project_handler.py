@@ -305,7 +305,7 @@ def handle_project_year(bot, message, student, project_theme):
         bot.send_message(message.chat.id, "Введите владельца репозитория (логин):")
         bot.register_next_step_handler(
             message,
-            lambda msg: handle_repo_owner(msg, student, project_theme, project_year),
+            lambda msg: handle_repo_owner(bot, msg, student, project_theme, project_year),
         )
     except ValueError:
         bot.send_message(
@@ -317,21 +317,28 @@ def handle_project_year(bot, message, student, project_theme):
 def handle_repo_owner(bot, message, student, project_theme, project_year):
     """функция для выбора владельца проекта"""
     repo_owner = message.text
+    project_info = {
+        "repo_owner": repo_owner,
+        "student": student,
+        "project_theme": project_theme,
+        "project_year": project_year
+    }
     bot.send_message(message.chat.id, "Введите имя репозитория:")
     bot.register_next_step_handler(
         message,
         lambda msg: handle_repository_name(
-            bot, msg, student, project_theme, project_year, repo_owner
+            bot, msg, project_info
         ),
     )
 
 
-def handle_repository_name(bot, message, student, project_theme, project_year, repo_owner):
+def handle_repository_name(bot, message, project_info):
     """Обработчик для ввода имени репозитория."""
     repository_name = message.text
 
     response_message = add_project(
-        project_theme, student["id"], project_year, repo_owner, repository_name
+        project_info["project_theme"], project_info["student"]["id"],
+        project_info["project_year"], project_info["repo_owner"], project_info["repository_name"]
     )
 
     bot.send_message(message.chat.id, response_message)

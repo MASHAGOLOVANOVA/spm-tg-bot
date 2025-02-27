@@ -72,15 +72,19 @@ def handle_meeting_time(bot, message, project_id, student_id, name, desc):
     time = message.text
     try:
         iso_time = (datetime.strptime(time, "%d.%m.%Y %H:%M")).isoformat()
-
+        meeting_info = {
+            "start_time": iso_time,
+            "name": name,
+            "description": desc,
+            "project_id": project_id
+        }
         bot.send_message(
             message.chat.id,
             "Выберите формат встречи:",
             reply_markup=get_meeting_format_markup(),
         )
-        meeting_options = {"name": name, "desc": desc}
         bot.register_next_step_handler(
-            bot, message, handle_meeting_format, project_id, student_id, meeting_options, iso_time
+            bot, message, handle_meeting_format, meeting_info
         )
     except ValueError:
         bot.send_message(
@@ -92,7 +96,7 @@ def handle_meeting_time(bot, message, project_id, student_id, name, desc):
         )
 
 
-def handle_meeting_format(bot, message, project_id, student_id, meeting_options, time):
+def handle_meeting_format(bot, message, meeting_info):
     """Функция для получения формата встречи."""
     meeting_format = message.text  # Получаем формат встречи
 
@@ -107,12 +111,12 @@ def handle_meeting_format(bot, message, project_id, student_id, meeting_options,
         online = meeting_format == "Онлайн"  # Устанавливаем значение is_online
         # Формируем данные для новой встречи
         new_meeting_data = {
-            "name": meeting_options["name"],
-            "description": meeting_options["desc"],
-            "project_id": int(project_id),
-            "student_participant_id": int(student_id),
+            "name": meeting_info["name"],
+            "description": meeting_info["desc"],
+            "project_id": int(meeting_info["project_id"]),
+            "student_participant_id": int(meeting_info["student_id"]),
             "is_online": online,
-            "meeting_time": time + "Z",  # Преобразуем в строку ISO 8601
+            "meeting_time": meeting_info["time"] + "Z",  # Преобразуем в строку ISO 8601
         }
 
         # Отправляем запрос на создание встречи
