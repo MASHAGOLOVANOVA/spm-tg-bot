@@ -8,11 +8,7 @@ from telegram.constants import ParseMode
 from meeting.meeting_service import get_meetings, add_meeting
 from menu.menu_handler import show_main_menu
 
-
-def meeting_handler_init(bot):
-    """Хендлер init"""
-
-    days_translation = {
+days_translation = {
         "Monday": "Понедельник",
         "Tuesday": "Вторник",
         "Wednesday": "Среда",
@@ -22,6 +18,9 @@ def meeting_handler_init(bot):
         "Sunday": "Воскресенье",
     }
 
+
+def meeting_handler_init(bot):
+    """Хендлер init"""
     @bot.message_handler(func=lambda message: message.text == "Мои встречи")
     def handle_meetings(message):
         """Хендлер встреч"""
@@ -32,43 +31,6 @@ def meeting_handler_init(bot):
                 bot.send_message(message.chat.id, d, parse_mode=ParseMode.MARKDOWN)
         else:
             bot.send_message(message.chat.id, "Встречи не назначены")
-
-    def format_meetings(grouped_meetings):
-        """функция для форматирования встреч"""
-        alldays = []
-        for day, meetings in grouped_meetings.items():
-            response = f"*{day}*\n\n"  # Заголовок дня недели
-            for meeting in meetings:
-                start_time = datetime.fromisoformat(meeting["time"].replace("Z", "+00:00"))
-                end_time = start_time + timedelta(
-                    hours=1
-                )  # Добавляем 1 час к начальному времени
-
-                # Форматируем время
-                formatted_start_time = start_time.strftime("%H:%M")
-                formatted_end_time = end_time.strftime("%H:%M")
-                response += f"{formatted_start_time}"
-                response += f" - {formatted_end_time}\nНазвание: {meeting['name']}\n"
-                response += f"Описание: {meeting['description']}\n"
-                response += f"Студент: {meeting['student']['name']},"
-                response += f" Курс: {meeting['student']['cource']}\n"
-                response += f"{'Онлайн' if meeting['is_online'] else 'Оффлайн'}\n\n"
-            response += "\n"
-            alldays.append(response)
-        return alldays
-
-    def group_meetings_by_day(meetings):
-        """функция для группировки встреч"""
-        grouped = {}
-        for meeting in meetings:
-            meeting_time = datetime.fromisoformat(meeting["time"].replace("Z", "+00:00"))
-            day = days_translation.get(meeting_time.strftime("%A"))  # Получаем день недели
-            date = meeting_time.strftime("%d.%m.%Y")
-            day += f", {date}"
-            if day not in grouped:
-                grouped[day] = []
-            grouped[day].append(meeting)
-        return grouped
 
     @bot.callback_query_handler(
         func=lambda call: call.data.startswith("add_meeting_project_")
@@ -125,15 +87,6 @@ def meeting_handler_init(bot):
                 message, handle_meeting_time, project_id, student_id, name, desc
             )
 
-
-    def get_meeting_format_markup():
-        """функция для получения доски для выбора формата встречи"""
-        markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
-        button_online = telebot.types.KeyboardButton("Онлайн")
-        button_offline = telebot.types.KeyboardButton("Оффлайн")
-        markup.add(button_online, button_offline)
-        return markup
-
     def handle_meeting_format(message, project_id, student_id, meeting_options, time):
         """Функция для получения формата встречи."""
         meeting_format = message.text  # Получаем формат встречи
@@ -168,3 +121,51 @@ def meeting_handler_init(bot):
             )
         finally:
             show_main_menu(message.chat.id)
+
+
+def get_meeting_format_markup():
+    """функция для получения доски для выбора формата встречи"""
+    markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    button_online = telebot.types.KeyboardButton("Онлайн")
+    button_offline = telebot.types.KeyboardButton("Оффлайн")
+    markup.add(button_online, button_offline)
+    return markup
+
+
+def group_meetings_by_day(meetings):
+    """функция для группировки встреч"""
+    grouped = {}
+    for meeting in meetings:
+        meeting_time = datetime.fromisoformat(meeting["time"].replace("Z", "+00:00"))
+        day = days_translation.get(meeting_time.strftime("%A"))  # Получаем день недели
+        date = meeting_time.strftime("%d.%m.%Y")
+        day += f", {date}"
+        if day not in grouped:
+            grouped[day] = []
+        grouped[day].append(meeting)
+    return grouped
+
+
+def format_meetings(grouped_meetings):
+    """функция для форматирования встреч"""
+    alldays = []
+    for day, meetings in grouped_meetings.items():
+        response = f"*{day}*\n\n"  # Заголовок дня недели
+        for meeting in meetings:
+            start_time = datetime.fromisoformat(meeting["time"].replace("Z", "+00:00"))
+            end_time = start_time + timedelta(
+                hours=1
+            )  # Добавляем 1 час к начальному времени
+
+            # Форматируем время
+            formatted_start_time = start_time.strftime("%H:%M")
+            formatted_end_time = end_time.strftime("%H:%M")
+            response += f"{formatted_start_time}"
+            response += f" - {formatted_end_time}\nНазвание: {meeting['name']}\n"
+            response += f"Описание: {meeting['description']}\n"
+            response += f"Студент: {meeting['student']['name']},"
+            response += f" Курс: {meeting['student']['cource']}\n"
+            response += f"{'Онлайн' if meeting['is_online'] else 'Оффлайн'}\n\n"
+        response += "\n"
+        alldays.append(response)
+    return alldays
