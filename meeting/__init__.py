@@ -1,3 +1,2 @@
 """meeting module init"""
-from .meeting_service import *
-from .meeting_handler import *
+from .meeting_handler import meeting_handler_init

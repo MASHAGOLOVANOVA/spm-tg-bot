@@ -1,13 +1,16 @@
 """docstring for run"""
-from commands import *
-from auth import *
-from ed_programme import *
-from integration import *
-from meeting import *
-from menu import *
-from project import *
-from student import *
-from task import *
+from auth import auth_handler_init
+from meeting import meeting_handler_init
+from project import projects_handler_init
+from commands import command_handler_init
+from task import task_handler_init
+from bot.bot import bot
+
+command_handler_init(bot)
+auth_handler_init(bot)
+projects_handler_init(bot)
+meeting_handler_init(bot)
+task_handler_init(bot)
 
 print("bot runs")
 bot.polling(none_stop=True, interval=0)

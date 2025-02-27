@@ -1,3 +1,2 @@
 """auth module init"""
-from .auth_handler import *
-from .auth_service import *
+from .auth_handler import auth_handler_init
