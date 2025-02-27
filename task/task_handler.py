@@ -92,7 +92,8 @@ def task_handler_init(bot):
             task_status = task.get("status", "Не указано")
             cloud_folder_link = task.get("cloud_folder_link", "Не указано")
 
-            formatted_deadline = datetime.fromisoformat(task_dead[:-1]).strftime("%Y-%m-%d %H:%M:%S")
+            formatted_deadline = (datetime.fromisoformat(task_dead[:-1])
+                                  .strftime("%Y-%m-%d %H:%M:%S"))
 
             tasks_message += f"🔹 *ID:* {task_id}\n"
             tasks_message += f"📝 *Название:* {task_name}\n"

@@ -106,24 +106,25 @@ def meeting_handler_init(bot):
         time = message.text
         try:
             iso_time = (datetime.strptime(time, "%d.%m.%Y %H:%M")).isoformat()
+
+            bot.send_message(
+                message.chat.id,
+                "Выберите формат встречи:",
+                reply_markup=get_meeting_format_markup(),
+            )
+            meeting_options = {"name": name, "desc": desc}
+            bot.register_next_step_handler(
+                message, handle_meeting_format, project_id, student_id, meeting_options, iso_time
+            )
         except ValueError:
             bot.send_message(
                 message.chat.id,
                 "Неверный формат даты. Пожалуйста, используйте формат YYYY-MM-DD HH:MM.",
             )
-            return bot.register_next_step_handler(
+            bot.register_next_step_handler(
                 message, handle_meeting_time, project_id, student_id, name, desc
             )
 
-        bot.send_message(
-            message.chat.id,
-            "Выберите формат встречи:",
-            reply_markup=get_meeting_format_markup(),
-        )
-        meeting_options = {"name": name, "desc": desc}
-        bot.register_next_step_handler(
-            message, handle_meeting_format, project_id, student_id, meeting_options, iso_time
-        )
 
     def get_meeting_format_markup():
         """функция для получения доски для выбора формата встречи"""
